@@ -1,0 +1,36 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package com.company.distributed.framework;
+
+message WorkerRequest {
+  int64 timestamp = 1;
+  string workerId = 2;
+}
+
+message WorkerResponse {
+  string code = 1;
+}
+
+message GetNextTaskResponse {
+  WorkerResponse workerResponse = 1;
+  string fileName = 2;
+  int64 startOffset = 3;
+  int32 chunkSize = 4;
+}
+
+message SubmitTaskRequest {
+  WorkerRequest workerRequest = 1;
+  WordCountResult wordCountResult = 2;
+}
+
+message WordCountResult {
+  int32 firstChar = 1;
+  int32 lastChar = 2;
+  int64 wordCount = 3;
+}
+
+service RemoteCalls {
+  rpc join(WorkerRequest) returns (WorkerResponse);
+  rpc getNextTask(WorkerRequest) returns (GetNextTaskResponse);
+  rpc submitTask(SubmitTaskRequest) returns (WorkerResponse);
+}
